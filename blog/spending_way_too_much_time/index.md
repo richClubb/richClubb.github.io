@@ -17,7 +17,7 @@ This Advent of Code (AoC) problem has been an ongoing thing for me for a few yea
 
 # What is the AoC 2023 Day 5 problem
 
-The offical site page is [here (official)](https://adventofcode.com/2023/day/5) requires logging in and completing Part A for full information, or [here](https://github.com/richClubb/adventofcode/blob/main/2023/day05/docs/problem.md) is the text copied out.
+The official site page is [here (official)](https://adventofcode.com/2023/day/5) requires logging in and completing Part A for full information, or [here](https://github.com/richClubb/adventofcode/blob/main/2023/day05/docs/problem.md) is the text copied out.
 
 The simple explanation is that you have an input value and a set of maps to transform it through to get an output.
 
@@ -50,14 +50,14 @@ Each layer consists of a set of maps which have a `source` a `target` and a `siz
 It's a pretty simple problem, basic math and logic.
 
 ```
-if (value >= source) and (value < souce + size) then (value = value - source + target)
+if (value >= source) and (value < source + size) then (value = value - source + target)
 ```
 
 There are 2 main datasets, the [sample data](https://github.com/richClubb/adventofcode/blob/main/2023/day05/sample_data.txt) and the [full data](https://github.com/richClubb/adventofcode/blob/main/2023/day05/full_data.txt). As you can see the sample data is a much smaller dataset, and the values are all < 255 where the full data is a much larger dataset with much larger values.
 
 ## Part A
 
-In Part A of the problem you have a set of inputs 20 for the full data and 7 layers with about 250 maps in tota for the full dataset. The sample data has a much reduced set of seeds (79 14 55 13) and maps (about 30)
+In Part A of the problem you have a set of inputs 20 for the full data and 7 layers with about 250 maps in total for the full dataset. The sample data has a much reduced set of seeds (79 14 55 13) and maps (about 30)
 
 ## Part B
 
@@ -70,13 +70,13 @@ So our original input set has gone from 4 values to 27 values (or maybe it hasn'
 
 # How to Solve this?
 
-Unless you're an AoC veteran (and frankly even if you are you might not forsee this) whatever way you came up for solving this for part A is probably going to take a very long time to compute the final value, so with all the information at hand on both problems, lets see what ways we can solve this.
+Unless you're an AoC veteran (and frankly even if you are you might not foresee this) whatever way you came up for solving this for part A is probably going to take a very long time to compute the final value, so with all the information at hand on both problems, lets see what ways we can solve this.
 
 ## Depth First
 
 This is probably the simplest method, and the one most people I've talked to come up with. You start with a minimum value, you run each value through the layers and check it against the minimum, if it's smaller, update and continue, and then output the minimum value at the end. 
 
-It's simple, succinct and for a programmer of any experinece you'll have it done in an hour (depending on your language, but we can come to that later)
+It's simple, succinct and for a programmer of any experience you'll have it done in an hour (depending on your language, but we can come to that later)
 
 ## Bredth First
 
@@ -110,7 +110,7 @@ This would take our ~2,000,000,000 inputs down to 10, which might be faster.....
 
 # Optimisations to the solutions
 
-Donald Knuth said "premature optimisation is the root of all evil" and he's right. Don't try to optimise until you know where the problems are. There is a bit of a caviat here though, you should have "designed" your problem properly first.
+Donald Knuth said "premature optimisation is the root of all evil" and he's right. Don't try to optimise until you know where the problems are. There is a bit of a caveat here though, you should have "designed" your problem properly first.
 
 Optimisation can get you local maxima, but maybe not the global. A bit of information from later, if you started with a brute force C implementation, you can get it down to under 2 minutes with compiler optimisations and profiling, but I can get Python down to less than 1 second by translating the ranges rather than brute forcing things without ever optimising the Python solution.
 
@@ -211,7 +211,7 @@ The difference between the C, Rust and Python implementations is pretty minimal 
 
 ## Foreign Function Interface (FFI)
 
-Another way to deal with this would be writing speed code in a faster language and the calling out to it. I'd (played around with this before)[https://github.com/richClubb/devlog/tree/main/2025-02-28/language_interop] and never finished the whole grid I was trying to fill out.
+Another way to deal with this would be writing speed code in a faster language and the calling out to it. I'd [played around with this before](https://github.com/richClubb/devlog/tree/main/2025-02-28/language_interop) and never finished the whole grid I was trying to fill out.
 
 Ctypes in Python is a really interesting way to solve problems, it provides an FFI interface to native C code. [I wrote an example](https://github.com/richClubb/adventofcode/tree/main/2023/day05/experiments/C%20and%20python%20FFI) which uses python to parse the code from the file, and then calls out to a dynamically linked lib written in C. In total the C code has 4 structs and 4 functions, less than 100 lines and the python is 150 lines, most of which is either argparsing or extracting the file. I played around with optimising the C library with what I'd learned from my C experiments and when optimised the speed difference was insignificant in comparison to the main C example. I also spent the time to use the same lib in the same way using C, and it had a very similar execution time but took 5x as much code to sort out and was much more frustrating in terms of memory management.
 
@@ -223,7 +223,7 @@ In this case, the problem parallelises pretty well on the seeds (part a), or see
 
 Python gives us the `multiprocessing` library which has `Pool`. This allows us to split the processing over multiple CPUs and have them simultaneously compute their local result and then check the minimum of the parallelised process.
 
-In other languages, C has `OpenMP` and `OpenCL`, Rust has the `rayon` crate, some languages automatically deal with parrelisation like F# will just automatically use as many CPUs as it can if you're using functional methods as they can naturally scale and grow. You've also got languages like Cuda which are specifically designed for parallel computation. Multiprocessing, OpenMP and rayon work really well alongside traditional languages, and as long as you can break your problem down into a parallelisable way it's very easy. Because of how I coded my Rust implementation I only had to change a single line to get rayon parallelisation to work
+In other languages, C has `OpenMP` and `OpenCL`, Rust has the `rayon` crate, some languages automatically deal with parallelisation like F# will just automatically use as many CPUs as it can if you're using functional methods as they can naturally scale and grow. You've also got languages like Cuda which are specifically designed for parallel computation. Multiprocessing, OpenMP and rayon work really well alongside traditional languages, and as long as you can break your problem down into a parallelisable way it's very easy. Because of how I coded my Rust implementation I only had to change a single line to get rayon parallelisation to work
 
 Single threaded
 ```Rust
@@ -241,7 +241,7 @@ Cuda and OpenCL are a different beast as you've got to do a lot more boilerplate
 
 ## Be clever and change your design
 
-If you look at part A to part B in a really niave way, it goes from 20 to 2,000,000,000 values. But you can also see it as going from 20 values, to 10 ranges as we covered earlier. The seed maps are able to be translate entire ranges or parts of ranges, but it just makes the logic more complex. I did an analysis on paper and came up with 13 cases where the seed range and the seed map interact and have to be dealt with.
+If you look at part A to part B in a really naive way, it goes from 20 to 2,000,000,000 values. But you can also see it as going from 20 values, to 10 ranges as we covered earlier. The seed maps are able to be translate entire ranges or parts of ranges, but it just makes the logic more complex. I did an analysis on paper and came up with 13 cases where the seed range and the seed map interact and have to be dealt with.
 
 While the logic is more complex the actual computation is not, and recoding the problem in python got a correct solution in 0.6s compared to hours and hours brute force. Even with faster languages like Rust or C it is 10 times faster.
 
@@ -253,7 +253,7 @@ A really key thing to understand is that no solution is perfect, so don't get at
 
 [Code Link](https://github.com/richClubb/adventofcode/tree/main/2023/day05/c)
 
-I spend most of my time in C, C++ or Rust these days. Work has me in C++ and Rust and most of the embedded stuff I'm doing is in C, so this was ok. I set myself the challenge to learn more about memory safety in C so I learned to use `valgrind` and `asan` to find memory leaks and errors. I also tried out a source code arrangement where the include and unit tests life alongside the code to make it more modular. I think it makes for a nicer more managable codebase than having separate `include/` `test/` and `src/` directories in the root of the directory.
+I spend most of my time in C, C++ or Rust these days. Work has me in C++ and Rust and most of the embedded stuff I'm doing is in C, so this was ok. I set myself the challenge to learn more about memory safety in C so I learned to use `valgrind` and `asan` to find memory leaks and errors. I also tried out a source code arrangement where the include and unit tests life alongside the code to make it more modular. I think it makes for a nicer more manageable codebase than having separate `include/` `test/` and `src/` directories in the root of the directory.
 
 The hardest part of this was mostly the file parsing, extracting the data into a sensible format, the rest was pretty easy.
 
@@ -275,7 +275,7 @@ I did have some issues with C when it comes to optimisations. I used the default
 
 [Code Link](https://github.com/richClubb/adventofcode/tree/main/2023/day05/c%2B%2B)
 
-This was probably one of the most interesting in terms of the side-effects. I chose to use recent version of C++ and used some of the more modern options, specifically the `optional` type, this is something about Rust that I really like. I alse used a more OO design which was similar to most other languages.
+This was probably one of the most interesting in terms of the side-effects. I chose to use recent version of C++ and used some of the more modern options, specifically the `optional` type, this is something about Rust that I really like. I also used a more OO design which was similar to most other languages.
 
 Initially i wrote the `map_seed` function like so
 
@@ -337,7 +337,7 @@ The main issue I had was that I wanted to create a nullable type and found it to
 
 [Code Link](https://github.com/richClubb/adventofcode/tree/main/2023/day05/f_sharp)
 
-This was an experiment with functional language and had a few unexpected surprises. At the time I started this I was working on [interop between different languages](https://github.com/richClubb/devlog/tree/main/2025-02-28/language_interop) and thought it would be good to experiment with the dotnet frameworks and how they might interact together. Functional programming has some advantages over imperative or OO and being able to farm out tasks to functions with zero / low cost was an appealing idea. But.... it was a pain to learn, the syntax is not friendly and I didn't like it, this might improve with time but intially it was just a bit awkward and didn't pull me in.
+This was an experiment with functional language and had a few unexpected surprises. At the time I started this I was working on [interop between different languages](https://github.com/richClubb/devlog/tree/main/2025-02-28/language_interop) and thought it would be good to experiment with the dotnet frameworks and how they might interact together. Functional programming has some advantages over imperative or OO and being able to farm out tasks to functions with zero / low cost was an appealing idea. But.... it was a pain to learn, the syntax is not friendly and I didn't like it, this might improve with time but initially it was just a bit awkward and didn't pull me in.
 
 The first surprise was that if I tried to solve the problem in a functional way, it ate all of my available memory. My assumption is that it was creating a vector of 1,900,000,000 values for both the input and output vector. F# isn't purely functional, you can use imperative code, by changing the code to use a more imperative design it was able to solve the function without consuming all the available memory.
 
@@ -350,7 +350,7 @@ The first surprise was that if I tried to solve the problem in a functional way,
         Array.map (fun a -> List.last a) processed_values |> Array.min
 
     // This works by only keeping track of the minimum value, rather than trying to store the list of all values
-    // by using a while loop rather than other iterators it means that it doesnt eat loads of memory
+    // by using a while loop rather than other iterators it means that it doesn’t eat loads of memory
     member this.FindMinSeedInRangeMutable( mappingLayers : List<MappingLayer> ) = 
 
         let mutable min_value = Int64.MaxValue
@@ -382,7 +382,7 @@ Overall good, would come back for more.
 
 [Code Link](https://github.com/richClubb/adventofcode/tree/main/2023/day05/java)
 
-This was basically the same as C# and I only did it to help pour fuel on someone elses argument, but I have similar complaints.
+This was basically the same as C# and I only did it to help pour fuel on someone else’s argument, but I have similar complaints.
 
 Although choosing Maven for the package management was a frustration. It took me longer to find information on how to use Maven than it did actually coding the solution, and figuring out the commands to build and package the dependencies with the `jar` file. Bleh.
 
@@ -416,7 +416,7 @@ I'd recommend learning some Rust, it's fun.
 
 I also have mixed feelings about Zig. The learning curve is pretty steep as to do anything of any substance and the flux in the interfaces can be a pain. I found some notes on 0.14 but I was using 0.15 and the interfaces had changed so none of the information was relevant.
 
-`build.zig` is very powerful but also a bit difficult to grasp initially. I think more study on my part would make this better, and I like how granular you can be. I like C and C++ as CMake allows you to access quite a lot (depending on how you arrange your CMake) but it also can lead into spaghetti code. With the specificity of `build.zig` you can intuatively see how interconnected your program is as you have to code it in directly.
+`build.zig` is very powerful but also a bit difficult to grasp initially. I think more study on my part would make this better, and I like how granular you can be. I like C and C++ as CMake allows you to access quite a lot (depending on how you arrange your CMake) but it also can lead into spaghetti code. With the specificity of `build.zig` you can intuitively see how interconnected your program is as you have to code it in directly.
 
 The allocator behaviour is a bit frustrating and I really think it could do with some examples of how best to use it. Several people in the Zig discord suggested using global variables for the allocators but this seems like a crutch and not a proper solution. It's a cool concept in general but I think it's a bit overkill, and I think it would benefit from the ability to switch out the allocator based on your build type (debug allocator for debug builds and the c allocator for release). It might be possible to do as you can create your own allocator but this is a whole other project.
 
@@ -433,3 +433,5 @@ Most people won't have to ever do any crazy computation like this. Typically mos
 I revisited this because I'm trying to complete 12 projects in 12 months, and finishing this off and completing it in a few more languages and techniques seemed like a good idea, but it just spiralled into a whole other thing which I'm pretty glad about. I've got to play around with languages I've not used before, and have a good comparison point between them. I learned a lot about performance profiling, language interop, parallelisation, and I finally got to do something with Cuda! It got me taking a more active role in some computing communities and I think in general made me a better programmer.
 
 I could talk about this for hours.... but I'll stop here :)
+
+
